@@ -1,0 +1,118 @@
+{% extends "layout.html" %} {% block title %}{{ article[1] }}{% endblock %} {%
+block content %}
+<main class="py-10 px-6 md:px-16 lg:px-36">
+  <article class="text-gray-900">
+    <!-- Title -->
+    <h1 class="text-4xl font-bold mb-4 leading-snug">{{ article[1] }}</h1>
+    <p class="text-sm text-blue-600 font-semibold mb-2">
+      Category: {{ article[5] }}
+    </p>
+
+    <!-- Image -->
+    {% if article[3] %}
+    <div class="mb-6">
+      <img
+        src="{{ url_for('static', filename='uploads/' + article[3]) }}"
+        alt="Header Image"
+        class="w-[30rem] object-cover rounded"
+      />
+    </div>
+    {% endif %}
+
+    <!-- Article Body -->
+    <div class="prose prose-lg max-w-none text-gray-800 mb-8">
+      {{ article[2] }}
+    </div>
+
+    <!-- Footer Info -->
+    <div class="text-sm text-gray-500 border-t pt-4">
+      <span>Published by {{ article[4] }}</span>
+    </div>
+  </article>
+
+  <hr class="my-6" />
+
+  {% if current_user.is_authenticated %}
+  <div class="flex items-center space-x-2 mt-4">
+    <form
+      method="POST"
+      action="{{ url_for('main.toggle_like', news_id=article[0]) }}"
+      onsubmit="event.preventDefault();
+       likeNews({{ article[0] }})"
+    >
+      <button
+        id="like-btn-{{ article[0] }}"
+        class="{% if user_liked %} font-bold text-red-600 {% else %} text-gray-400 {% endif %} hover:text-red-600 text-xl"
+      >
+        <i class="fa fa-heart"></i
+        ><span id="like-count-{{ article[0] }}" class="text-sm text-gray-600">
+          {{ article[7] }}
+        </span>
+      </button>
+      <div class="text-sm text-gray-500 border-t pt-4 flex items-center">
+        <span>Published by {{ article[4] }}</span>
+        <span>👁️ {{ article[6] }} views</span>
+      </div>
+    </form>
+  </div>
+  {% else %}
+  <p class="text-gray-500 mt-4">Log in to like this post.</p>
+  {% endif %}
+
+  <h3 class="text-xl font-semibold mb-2">💬 Comments</h3>
+
+  {% if current_user.is_authenticated %}
+  <form method="POST" class="mb-6">
+    <textarea
+      name="comment"
+      required
+      rows="3"
+      class="w-full p-2 border rounded mb-2"
+      placeholder="Write a comment..."
+    ></textarea>
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+      Post Comment
+    </button>
+  </form>
+  {% else %}
+  <p class="mb-4 text-gray-600">
+    Please <a href="/login" class="underline">log in</a> to comment.
+  </p>
+  {% endif %} {% if comments %}
+  <div class="space-y-4">
+    {% for c in comments %}
+    <div class="bg-gray-100 p-3 rounded shadow-sm">
+      <p class="text-sm text-gray-800">{{ c[0] }}</p>
+      <div class="text-xs text-gray-500 mt-1">— {{ c[2] }} at {{ c[1] }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+  {% endif %}
+</main>
+
+<script>
+  function likeNews(newsId) {
+    fetch(`/like/${newsId}`, {
+      method: "POST",
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        const btn = document.getElementById(`like-btn-${newsId}`);
+        const count = document.getElementById(`like-count-${newsId}`);
+
+        if (data.liked) {
+          btn.classList.add("font-bold", "text-red-600");
+          btn.classList.remove("text-gray-400");
+        } else {
+          btn.classList.remove("font-bold", "text-red-600");
+          btn.classList.add("text-gray-400");
+        }
+
+        count.textContent = data.like_count;
+      });
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "layout.html" %} {% block title %}Profile of {{ user[1] }}{% endblock
+%} {% block content %}
+<div class="max-w-3xl mx-auto py-10">
+  <h1 class="text-3xl font-bold mb-6">
+    👤 Profile: {{ user[1] }} -
+    <a href="{{ url_for('user.edit_profile') }}">Edit Profile</a>
+  </h1>
+
+  <div class="grid grid-cols-2 gap-4 mb-6 text-sm text-gray-700">
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-semibold text-blue-600">💬 Comments Made</p>
+      <p class="text-2xl font-bold">{{ comment_count }}</p>
+    </div>
+    <div class="bg-white p-4 rounded shadow">
+      <p class="font-semibold text-red-600">❤️ Likes Given</p>
+      <p class="text-2xl font-bold">{{ like_count }}</p>
+    </div>
+  </div>
+
+  <!-- Liked News -->
+  <section class="mb-8">
+    <h2 class="text-xl font-semibold mb-2">❤️ Liked News</h2>
+    {% if liked_news %}
+    <ul class="list-disc list-inside text-blue-600">
+      {% for news in liked_news %}
+      <li>
+        <a href="{{ url_for('main.view_news', id=news[0]) }}" class="underline"
+          >{{ news[1] }}</a
+        >
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="text-gray-500">No liked news yet.</p>
+    {% endif %}
+  </section>
+
+  <!-- Comments -->
+  <section>
+    <h2 class="text-xl font-semibold mb-2">💬 Comments</h2>
+    {% if comments %}
+    <div class="space-y-4">
+      {% for comment in comments %}
+      <div class="bg-gray-100 p-4 rounded shadow-sm">
+        <p class="text-gray-800">{{ comment[1] }}</p>
+        <p class="text-sm text-gray-500 mt-1">
+          on
+          <a
+            href="{{ url_for('main.view_news', id=comment[3]) }}"
+            class="underline"
+            >{{ comment[0] }}</a
+          >
+          at {{ comment[2] }}
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-gray-500">No comments yet.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

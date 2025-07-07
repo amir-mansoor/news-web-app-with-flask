@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block title %}Edit News{% endblock %} {% block
+content %}
+<h2 class="text-2xl font-bold mb-4">✏️ Edit News</h2>
+<form method="POST" class="bg-white p-6 rounded shadow max-w-2xl">
+  <input
+    name="title"
+    type="text"
+    value="{{ news[1] }}"
+    required
+    class="w-full mb-4 p-2 border rounded"
+  />
+  <textarea
+    name="content"
+    required
+    class="w-full mb-4 p-2 border rounded"
+    rows="6"
+  >
+{{ news[2] }}</textarea
+  >
+  <select name="category" class="w-full mb-4 p-2 border rounded" required>
+  {% for cat in ['Politics', 'Technology', 'Sports', 'Entertainment', 'Health'] %}
+    <option value="{{ cat }}" {% if news[3] == cat %}selected{% endif %}>{{ cat }}</option>
+  {% endfor %}
+</select>
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
+    Update
+  </button>
+</form>
+{% endblock %}

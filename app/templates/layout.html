@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Flask News App{% endblock %}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col">
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
+      <a href="/" class="text-xl font-bold">📰 Flask News</a>
+
+      <div class="space-x-2">
+        {% for cat in ['Politics', 'Technology', 'Sports', 'Entertainment',
+        'Health'] %}
+        <a
+          href="{{ url_for('main.filter_by_category', name=cat) }}"
+          class="text-sm underline"
+          >{{ cat }}</a
+        >
+        {% endfor %}
+      </div>
+
+      <form
+        method="GET"
+        action="{{ url_for('main.search') }}"
+        class="inline-block"
+      >
+        <input
+          type="text"
+          name="q"
+          placeholder="Search news..."
+          required
+          class="rounded px-2 py-1 text-black"
+        />
+        <button
+          type="submit"
+          class="ml-1 px-2 py-1 bg-white text-blue-600 rounded"
+        >
+          🔍
+        </button>
+      </form>
+
+      <div>
+        {% if current_user.is_authenticated %}
+        <a href="/user/{{current_user.email}}" class="mr-4"
+          >Hello, {{ current_user.username }}</a
+        >
+        {% if current_user.role == 'admin' %}
+        <a href="/add" class="mr-4 underline">Add News</a>
+        {% endif %}
+        <a href="/logout" class="underline">Logout</a>
+        {% else %}
+        <a href="/login" class="mr-4 underline">Login</a>
+        <a href="/register" class="underline">Register</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <main class="flex-grow container mx-auto p-6">
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="mb-4 bg-green-100 text-green-800 p-4 rounded">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-200 text-center py-4">
+      &copy; {{ now().year }} Flask News App
+    </footer>
+  </body>
+</html>

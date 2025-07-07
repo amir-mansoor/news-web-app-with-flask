@@ -1,0 +1,68 @@
+{% extends "layout.html" %} {% block title %}Home | Flask News{% endblock %} {%
+block content %}
+<h1 class="text-2xl font-bold mb-6">Latest News</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for article in articles %}
+  <div class="bg-white rounded shadow p-4">
+    {% if article[3] %}
+    <img
+      src="{{ url_for('static', filename='uploads/' + article[3]) }}"
+      class="w-full h-40 object-cover rounded mb-2"
+      alt="News Image"
+    />
+    {% endif %}
+    <h2 class="text-xl font-semibold">
+      <a
+        href="{{ url_for('main.view_news', id=article[0]) }}"
+        class="hover:underline text-blue-600"
+      >
+        {{ article[1] }}
+      </a>
+    </h2>
+    <p class="text-gray-600 text-sm mt-1 mb-2">{{ article[2][:150] }}...</p>
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <div class="mt-2 flex gap-2">
+      <a
+        href="{{ url_for('admin.edit_news', id=article[0]) }}"
+        class="text-blue-600 text-sm underline"
+        >Edit</a
+      >
+      <form
+        method="POST"
+        action="{{ url_for('admin.delete_news', id=article[0]) }}"
+        onsubmit="return confirm('Are you sure?');"
+      >
+        <button type="submit" class="text-red-600 text-sm underline">
+          Delete
+        </button>
+      </form>
+    </div>
+    {% endif %}
+    <p class="text-xs text-gray-400">By {{ article[4] }}</p>
+    <p class="text-xs text-blue-600 font-medium mb-1">
+      Category: {{ article[5] }}
+    </p>
+  </div>
+  {% endfor %}
+</div>
+<div class="flex justify-center mt-8 space-x-4">
+  {% if page > 1 %}
+  <a
+    href="{{ url_for('main.home', page=page-1) }}"
+    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+    >Previous</a
+  >
+  {% endif %}
+
+  <span class="px-4 py-2 bg-blue-600 text-white rounded">{{ page }}</span>
+
+  {% if page < total_pages %}
+  <a
+    href="{{ url_for('main.home', page=page+1) }}"
+    class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+    >Next</a
+  >
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+[project]
+name = "news-app"
+version = "0.1.0"
+description = "full stack news app build with python-flask"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.1.1",
+    "flask-login>=0.6.3",
+    "requests>=2.32.4",
+    "werkzeug>=3.1.3",
+]
