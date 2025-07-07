@@ -73,6 +73,14 @@ def init_db(app):
             name TEXT UNIQUE NOT NULL
         )
         ''')
+
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS subscribers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        )
+        ''')
         conn.commit()
         conn.close()
 

@@ -106,6 +106,26 @@
       {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
 
+    <div class="container mx-auto">
+      <form action="{{ url_for('user.subscribe') }}" method="POST" class="mt-4">
+        <label class="block text-sm text-gray-600 mb-1"
+          >📬 Subscribe to our newsletter</label
+        >
+        <div class="flex">
+          <input
+            type="email"
+            name="email"
+            required
+            placeholder="Enter your email"
+            class="w-full p-2 rounded-l border border-gray-300"
+          />
+          <button type="submit" class="bg-blue-600 text-white px-4 rounded-r">
+            Subscribe
+          </button>
+        </div>
+      </form>
+    </div>
+
     <footer class="bg-gray-200 text-center py-4">
       &copy; {{ now().year }} Flask News App
     </footer>

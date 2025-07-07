@@ -100,3 +100,26 @@ def edit_profile():
     conn.close()
 
     return render_template('edit_profile.html', username=user[0], email=user[1])
+
+@user.route('/subscribe', methods=['POST'])
+def subscribe():
+    email = request.form.get('email', '').strip().lower()
+
+    # Simple validation
+    if not email or '@' not in email:
+        flash("Please enter a valid email.", "error")
+        return redirect(request.referrer)
+
+    conn = sqlite3.connect(current_app.config['DATABASE'])
+    c = conn.cursor()
+
+    try:
+        c.execute("INSERT INTO subscribers (email) VALUES (?)", (email,))
+        conn.commit()
+        flash("You've been subscribed to the newsletter!", "success")
+    except sqlite3.IntegrityError:
+        flash("This email is already subscribed.", "info")
+    finally:
+        conn.close()
+
+    return redirect(request.referrer)
