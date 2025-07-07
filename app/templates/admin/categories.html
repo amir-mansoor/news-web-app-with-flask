@@ -1,0 +1,43 @@
+{% extends "layout.html" %} {% block title %}Manage Categories{% endblock %} {%
+block content %}
+<div class="max-w-2xl mx-auto py-10">
+  <h1 class="text-2xl font-bold mb-4">🗂 Manage Categories</h1>
+
+  <!-- Add Category -->
+  <form
+    method="POST"
+    action="{{ url_for('admin.add_category') }}"
+    class="flex space-x-2 mb-6"
+  >
+    <input
+      name="name"
+      required
+      placeholder="New Category"
+      class="flex-1 p-2 border rounded"
+    />
+    <button class="bg-blue-600 text-white px-4 py-2 rounded">Add</button>
+  </form>
+
+  <!-- List Categories -->
+  {% if categories %}
+  <ul class="space-y-2">
+    {% for cat in categories %}
+    <li
+      class="flex justify-between items-center bg-white p-3 rounded shadow-sm"
+    >
+      <span>{{ cat[1] }}</span>
+      <form
+        method="POST"
+        action="{{ url_for('admin.delete_category', category_id=cat[0]) }}"
+        onsubmit="return confirm('Delete this category?')"
+      >
+        <button class="text-red-600 text-sm underline">Delete</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-gray-500">No categories yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

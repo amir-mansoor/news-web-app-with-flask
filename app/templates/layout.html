@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>{% block title %}Flask News App{% endblock %}</title>
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -10,52 +11,87 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="bg-gray-100 min-h-screen flex flex-col">
-    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <a href="/" class="text-xl font-bold">📰 Flask News</a>
+    <nav
+      class="bg-white shadow-md px-6 py-4 flex flex-wrap md:flex-nowrap justify-between items-center"
+    >
+      <!-- Logo -->
+      <a
+        href="/"
+        class="text-2xl font-extrabold text-blue-600 flex items-center gap-2"
+      >
+        📰 <span>Flask News</span>
+      </a>
 
-      <div class="space-x-2">
-        {% for cat in ['Politics', 'Technology', 'Sports', 'Entertainment',
-        'Health'] %}
+      <!-- Categories -->
+      <div
+        class="flex flex-wrap justify-center gap-3 mt-4 md:mt-0 md:ml-6 text-sm text-gray-600 font-medium"
+      >
+        {% for cat in categories %}
         <a
-          href="{{ url_for('main.filter_by_category', name=cat) }}"
-          class="text-sm underline"
-          >{{ cat }}</a
+          href="{{ url_for('main.filter_by_category', name=cat[1]) }}"
+          class="hover:text-blue-600 transition-colors"
         >
+          {{ cat[1] }}
+        </a>
         {% endfor %}
       </div>
 
+      <!-- Search bar -->
       <form
         method="GET"
         action="{{ url_for('main.search') }}"
-        class="inline-block"
+        class="flex mt-4 md:mt-0 md:ml-6"
       >
         <input
           type="text"
           name="q"
           placeholder="Search news..."
           required
-          class="rounded px-2 py-1 text-black"
+          class="px-3 py-1.5 border rounded-l-md border-gray-300 focus:outline-none focus:ring focus:border-blue-500 text-sm"
         />
         <button
           type="submit"
-          class="ml-1 px-2 py-1 bg-white text-blue-600 rounded"
+          class="px-3 py-1.5 bg-blue-600 text-white rounded-r-md text-sm hover:bg-blue-700 transition-colors"
         >
           🔍
         </button>
       </form>
 
-      <div>
+      <!-- User Section -->
+      <div class="flex items-center gap-3 mt-4 md:mt-0 md:ml-6 text-sm">
         {% if current_user.is_authenticated %}
-        <a href="/user/{{current_user.email}}" class="mr-4"
-          >Hello, {{ current_user.username }}</a
+        <a href="{{ url_for('user.user_profile', email=current_user.email) }}"
+          ><span class="text-gray-700">👤 {{ current_user.username }}</span></a
         >
         {% if current_user.role == 'admin' %}
-        <a href="/add" class="mr-4 underline">Add News</a>
+        <a href="/add" class="text-blue-600 hover:underline">Add News</a>
+        <a
+          href="{{url_for('admin.dashboard')}}"
+          class="text-blue-600 hover:underline"
+          >Dashboard</a
+        >
+        <a
+          href="{{ url_for('admin.manage_users') }}"
+          class="text-blue-600 hover:underline"
+          >Manage Users</a
+        >
+        <a
+          href="{{ url_for('admin.manage_comments') }}"
+          class="text-blue-600 hover:underline"
+        >
+          Manage Comments</a
+        >
+        <a
+          href="{{ url_for('admin.manage_categories') }}"
+          class="text-blue-600 hover:underline"
+        >
+          Manage Categories</a
+        >
         {% endif %}
-        <a href="/logout" class="underline">Logout</a>
+        <a href="/logout" class="text-red-600 hover:underline">Logout</a>
         {% else %}
-        <a href="/login" class="mr-4 underline">Login</a>
-        <a href="/register" class="underline">Register</a>
+        <a href="/login" class="text-blue-600 hover:underline">Login</a>
+        <a href="/register" class="text-blue-600 hover:underline">Register</a>
         {% endif %}
       </div>
     </nav>

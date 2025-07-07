@@ -17,11 +17,18 @@ content %}
   >
 {{ news[2] }}</textarea
   >
-  <select name="category" class="w-full mb-4 p-2 border rounded" required>
-  {% for cat in ['Politics', 'Technology', 'Sports', 'Entertainment', 'Health'] %}
-    <option value="{{ cat }}" {% if news[3] == cat %}selected{% endif %}>{{ cat }}</option>
-  {% endfor %}
-</select>
+  <!-- Category Dropdown -->
+<div class="mb-4">
+  <label class="block mb-1 font-semibold">Category</label>
+  <select name="category" class="w-full p-2 border rounded" required>
+    {% for cat in categories %}
+    <option value="{{ cat[0] }}"
+      {% if news and news[3] == cat[0] %}selected{% endif %}>
+      {{ cat[1] }}
+    </option>
+    {% endfor %}
+  </select>
+</div>
   <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
     Update
   </button>

@@ -27,17 +27,18 @@ def init_db(app):
         );
     ''')
 
-        # News table
         c.execute('''
-        CREATE TABLE IF NOT EXISTS news (
+            CREATE TABLE IF NOT EXISTS news (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT,
             content TEXT,
             image TEXT,
-            category TEXT DEFAULT 'General',
             author_id INTEGER,
-            FOREIGN KEY(author_id) REFERENCES users(id)
-        )
+            category_id INTEGER,
+            view_count INTEGER DEFAULT 0,
+            FOREIGN KEY(author_id) REFERENCES users(id),
+            FOREIGN KEY(category_id) REFERENCES categories(id)
+        )   
         ''')
 
         # Comments table
@@ -66,6 +67,12 @@ def init_db(app):
         )
         ''')
 
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS categories (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE NOT NULL
+        )
+        ''')
         conn.commit()
         conn.close()
 

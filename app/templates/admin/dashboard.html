@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block title %}Admin Dashboard{% endblock %} {%
+block content %}
+<div class="max-w-4xl mx-auto py-10">
+  <h1 class="text-3xl font-bold mb-6">🛠️ Admin Dashboard</h1>
+
+  <div class="grid grid-cols-2 gap-4 text-center text-white mb-8">
+    <div class="bg-blue-500 p-4 rounded shadow">
+      <p class="text-xl">📰 Total News</p>
+      <p class="text-3xl font-bold">{{ total_news }}</p>
+    </div>
+    <div class="bg-green-500 p-4 rounded shadow">
+      <p class="text-xl">👥 Total Users</p>
+      <p class="text-3xl font-bold">{{ total_users }}</p>
+    </div>
+    <div class="bg-yellow-500 p-4 rounded shadow">
+      <p class="text-xl">💬 Comments</p>
+      <p class="text-3xl font-bold">{{ total_comments }}</p>
+    </div>
+    <div class="bg-red-500 p-4 rounded shadow">
+      <p class="text-xl">❤️ Likes</p>
+      <p class="text-3xl font-bold">{{ total_likes }}</p>
+    </div>
+  </div>
+
+  <h2 class="text-2xl font-semibold mb-3">🕒 Latest News</h2>
+  <ul class="list-disc list-inside text-blue-700">
+    {% for n in latest_news %}
+    <li>
+      <a href="{{ url_for('main.view_news', id=n[1]) }}" class="underline"
+        >{{ n[0] }}</a
+      >
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -21,12 +21,13 @@ def home():
 
 
     c.execute('''
-        SELECT news.id, news.title, news.content, news.image, users.username,news.category
-        FROM news
-        JOIN users ON news.author_id = users.id
-        ORDER BY news.id DESC 
-        LIMIT ? OFFSET ?
-    ''',(per_page, offset))
+    SELECT news.id, news.title, news.content, news.image, users.username, categories.name
+    FROM news
+    JOIN users ON news.author_id = users.id
+    JOIN categories ON news.category_id = categories.id
+    ORDER BY news.id DESC 
+    LIMIT ? OFFSET ?
+''', (per_page, offset))
     articles = c.fetchall()
     conn.close()
     total_pages = (total + per_page - 1) // per_page  # ceil
@@ -39,7 +40,7 @@ def view_news(id):
     conn = sqlite3.connect(current_app.config['DATABASE'])
     c = conn.cursor()
 
-    c.execute("UPDATE news SET views = views + 1 WHERE id = ?", (id,))
+    c.execute("UPDATE news SET view_count = view_count + 1 WHERE id = ?", (id,))
 
     if request.method == 'POST' and current_user.is_authenticated:
         content = request.form['comment'].strip()
@@ -53,12 +54,13 @@ def view_news(id):
     conn.commit()
     # Get article + like count
     c.execute('''
-        SELECT news.id, news.title, news.content, news.image, users.username, news.category, news.views,
-               (SELECT COUNT(*) FROM likes WHERE news_id = news.id) as like_count
-        FROM news
-        JOIN users ON news.author_id = users.id
-        WHERE news.id = ?
-    ''', (id,))
+    SELECT news.id, news.title, news.content, news.image, users.username, categories.name, news.view_count,
+           (SELECT COUNT(*) FROM likes WHERE news_id = news.id) as like_count
+    FROM news
+    JOIN users ON news.author_id = users.id
+    JOIN categories ON news.category_id = categories.id
+    WHERE news.id = ?
+''', (id,))
     article = c.fetchone()
 
     if not article:
@@ -83,7 +85,7 @@ def view_news(id):
         if c.fetchone():
             user_liked = True
 
-
+    print(article)
     conn.close()
     return render_template("view_news.html", article=article, comments=comments, user_liked=user_liked)
 
@@ -156,7 +158,6 @@ def search():
 
     return render_template('search_results.html', articles=articles, query=query)
 
-# route for filtering by category
 @main.route('/category/<name>')
 def filter_by_category(name):
     page = request.args.get('page', 1, type=int)
@@ -166,21 +167,30 @@ def filter_by_category(name):
     conn = sqlite3.connect(current_app.config['DATABASE'])
     c = conn.cursor()
 
-    c.execute("SELECT COUNT(*) FROM news WHERE category = ?", (name,))
+    # Get total news count in this category
+    c.execute('''
+        SELECT COUNT(*) FROM news
+        JOIN categories ON news.category_id = categories.id
+        WHERE categories.name = ?
+    ''', (name,))
     total = c.fetchone()[0]
 
+    # Fetch articles
     c.execute('''
-        SELECT news.id, news.title, news.content, news.image, users.username, news.category
+        SELECT news.id, news.title, news.content, news.image, users.username, categories.name
         FROM news
         JOIN users ON news.author_id = users.id
-        WHERE news.category = ?
+        JOIN categories ON news.category_id = categories.id
+        WHERE categories.name = ?
         ORDER BY news.id DESC
         LIMIT ? OFFSET ?
     ''', (name, per_page, offset))
 
     articles = c.fetchall()
     conn.close()
-    total_pages = (total + per_page - 1) // per_page  # ceil
+
+    total_pages = (total + per_page - 1) // per_page
+
     return render_template(
         'category.html',
         articles=articles,
@@ -188,6 +198,8 @@ def filter_by_category(name):
         page=page,
         total_pages=total_pages
     )
+
+
 
 # route for liking/unliking news
 @main.route('/like/<int:news_id>', methods=['POST'])
