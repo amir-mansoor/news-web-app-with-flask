@@ -72,3 +72,7 @@ that's it
 - Tag support in addition to categories
 - Dockerize for easy deployment
 - PostgreSQL support for production
+
+### Author
+
+Amir Mansoor

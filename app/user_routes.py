@@ -7,7 +7,6 @@ user = Blueprint('user', __name__)
 
 @user.route('/user/<email>')
 def user_profile(email):
-    print(current_user.email,email)
     if current_user.email != email:
         return redirect(url_for("main.home"))
     conn = sqlite3.connect(current_app.config['DATABASE'])
