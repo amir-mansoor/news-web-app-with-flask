@@ -288,3 +288,42 @@ def delete_category(category_id):
 
     flash("Category deleted.")
     return redirect(url_for('admin.manage_categories'))
+
+
+@admin.route('/subscribers')
+@login_required
+@admin_only
+def view_subscribers():
+    conn = sqlite3.connect(current_app.config['DATABASE'])
+    c = conn.cursor()
+    c.execute("SELECT email, created_at FROM subscribers ORDER BY created_at DESC")
+    subscribers = c.fetchall()
+    conn.close()
+    return render_template('admin/subscribers.html', subscribers=subscribers)
+
+
+@admin.route('/subscribers/export')
+@login_required
+@admin_only
+def export_subscribers():
+    import csv
+    from flask import Response
+    conn = sqlite3.connect(current_app.config['DATABASE'])
+    c = conn.cursor()
+    c.execute("SELECT email, created_at FROM subscribers ORDER BY created_at DESC")
+    rows = c.fetchall()
+    conn.close()
+
+    def generate():
+        data = csv.writer(open('/tmp/subscribers.csv', 'w', newline=''))
+        yield 'Email,Subscribed At\n'
+        for row in rows:
+            yield f"{row[0]},{row[1]}\n"
+
+    return Response(
+        generate(),
+        mimetype='text/csv',
+        headers={
+            "Content-Disposition": "attachment; filename=subscribers.csv"
+        }
+    )

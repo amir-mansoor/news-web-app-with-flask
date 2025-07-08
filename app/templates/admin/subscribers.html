@@ -1,0 +1,35 @@
+{% extends "layout.html" %} {% block title %}Newsletter Subscribers{% endblock
+%} {% block content %}
+<div class="max-w-4xl mx-auto mt-10">
+  <h1 class="text-2xl font-bold mb-6">📧 Newsletter Subscribers</h1>
+
+  {% if subscribers %}
+  <table class="w-full bg-white rounded shadow overflow-hidden">
+    <thead class="bg-gray-200 text-left text-sm text-gray-600">
+      <tr>
+        <th class="p-3">Email</th>
+        <th class="p-3">Subscribed At</th>
+      </tr>
+    </thead>
+    <tbody class="text-sm">
+      {% for sub in subscribers %}
+      <tr class="border-b">
+        <td class="p-3">{{ sub[0] }}</td>
+        <td class="p-3">{{ sub[1] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="mb-4 mt-4">
+    <a
+      href="{{ url_for('admin.export_subscribers') }}"
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+    >
+      ⬇️ Export CSV
+    </a>
+  </div>
+  {% else %}
+  <p class="text-gray-600">No subscribers found.</p>
+  {% endif %}
+</div>
+{% endblock %}
