@@ -1,25 +1,33 @@
 {% extends "layout.html" %} {% block title %}Search Results{% endblock %} {%
 block content %}
-<h2 class="text-2xl font-bold mb-4">Search Results for: "{{ query }}"</h2>
+<h2 class="text-2xl font-bold mb-6 text-blue-700">
+  🔍 Search Results for: "<span class="italic">{{ query }}</span>"
+</h2>
 
 {% if articles %}
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for article in articles %}
-  <a href="{{ url_for('main.view_news', id=article[0]) }}">
-    <div class="bg-white rounded shadow p-4 hover:shadow-lg transition">
-      {% if article[3] %}
-      <img
-        src="{{ url_for('static', filename='uploads/' + article[3]) }}"
-        class="w-full h-40 object-cover rounded mb-2"
-      />
-      {% endif %}
-      <h2 class="text-xl font-semibold">{{ article[1] }}</h2>
-      <p class="text-gray-600 text-sm mt-1 mb-2">{{ article[2][:150] }}...</p>
-      <p class="text-xs text-gray-400">By {{ article[4] }}</p>
-    </div>
+  <a
+    href="{{ url_for('main.view_news', id=article[0]) }}"
+    class="bg-white rounded-xl shadow-md p-4 hover:shadow-xl transition duration-300 block"
+  >
+    {% if article[3] %}
+    <img
+      src="{{ url_for('static', filename='uploads/' + article[3]) }}"
+      class="w-full h-44 object-cover rounded mb-3"
+      alt="News Image"
+    />
+    {% endif %}
+    <h3 class="text-lg font-semibold text-blue-600 mb-1">{{ article[1] }}</h3>
+    <p class="text-gray-600 text-sm mb-2">{{ article[2][:150] }}...</p>
+    <p class="text-xs text-gray-400">By {{ article[4] }}</p>
   </a>
   {% endfor %}
 </div>
 {% else %}
-<p>No news articles matched your search.</p>
+<p
+  class="text-gray-600 bg-white p-4 rounded shadow max-w-xl mx-auto mt-6 text-center"
+>
+  😕 No news articles matched your search for "<strong>{{ query }}</strong>".
+</p>
 {% endif %} {% endblock %}

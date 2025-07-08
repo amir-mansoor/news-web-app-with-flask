@@ -1,36 +1,45 @@
 {% extends "layout.html" %} {% block title %}Admin Dashboard{% endblock %} {%
 block content %}
-<div class="max-w-4xl mx-auto py-10">
-  <h1 class="text-3xl font-bold mb-6">🛠️ Admin Dashboard</h1>
+<div class="max-w-5xl mx-auto py-10 px-4">
+  <h1 class="text-3xl font-bold text-blue-700 mb-8">🛠️ Admin Dashboard</h1>
 
-  <div class="grid grid-cols-2 gap-4 text-center text-white mb-8">
-    <div class="bg-blue-500 p-4 rounded shadow">
-      <p class="text-xl">📰 Total News</p>
-      <p class="text-3xl font-bold">{{ total_news }}</p>
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10 text-white">
+    <div class="bg-blue-600 p-6 rounded-lg shadow-md text-center">
+      <p class="text-lg font-semibold">📰 Total News</p>
+      <p class="text-4xl font-bold mt-2">{{ total_news }}</p>
     </div>
-    <div class="bg-green-500 p-4 rounded shadow">
-      <p class="text-xl">👥 Total Users</p>
-      <p class="text-3xl font-bold">{{ total_users }}</p>
+    <div class="bg-green-600 p-6 rounded-lg shadow-md text-center">
+      <p class="text-lg font-semibold">👥 Total Users</p>
+      <p class="text-4xl font-bold mt-2">{{ total_users }}</p>
     </div>
-    <div class="bg-yellow-500 p-4 rounded shadow">
-      <p class="text-xl">💬 Comments</p>
-      <p class="text-3xl font-bold">{{ total_comments }}</p>
+    <div class="bg-yellow-500 p-6 rounded-lg shadow-md text-center">
+      <p class="text-lg font-semibold">💬 Total Comments</p>
+      <p class="text-4xl font-bold mt-2">{{ total_comments }}</p>
     </div>
-    <div class="bg-red-500 p-4 rounded shadow">
-      <p class="text-xl">❤️ Likes</p>
-      <p class="text-3xl font-bold">{{ total_likes }}</p>
+    <div class="bg-red-500 p-6 rounded-lg shadow-md text-center">
+      <p class="text-lg font-semibold">❤️ Total Likes</p>
+      <p class="text-4xl font-bold mt-2">{{ total_likes }}</p>
     </div>
   </div>
 
-  <h2 class="text-2xl font-semibold mb-3">🕒 Latest News</h2>
-  <ul class="list-disc list-inside text-blue-700">
+  <!-- Latest News -->
+  <h2 class="text-2xl font-semibold text-gray-800 mb-4">🕒 Latest News</h2>
+  {% if latest_news %}
+  <ul class="space-y-2 text-blue-700">
     {% for n in latest_news %}
-    <li>
-      <a href="{{ url_for('main.view_news', id=n[1]) }}" class="underline"
-        >{{ n[0] }}</a
+    <li class="bg-white p-3 rounded shadow hover:bg-blue-50 transition">
+      <a
+        href="{{ url_for('main.view_news', id=n[1]) }}"
+        class="underline font-medium"
       >
+        {{ n[0] }}
+      </a>
     </li>
     {% endfor %}
   </ul>
+  {% else %}
+  <p class="text-gray-500">No recent news found.</p>
+  {% endif %}
 </div>
 {% endblock %}

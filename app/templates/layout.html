@@ -4,13 +4,17 @@
     <meta charset="UTF-8" />
     <title>{% block title %}Flask News App{% endblock %}</title>
 
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Optional Font Awesome -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   </head>
   <body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- Navigation -->
     <nav
       class="bg-white shadow-md px-6 py-4 flex flex-wrap md:flex-nowrap justify-between items-center"
     >
@@ -36,7 +40,7 @@
         {% endfor %}
       </div>
 
-      <!-- Search bar -->
+      <!-- Search Bar -->
       <form
         method="GET"
         action="{{ url_for('main.search') }}"
@@ -58,41 +62,62 @@
       </form>
 
       <!-- User Section -->
-      <div class="flex items-center gap-3 mt-4 md:mt-0 md:ml-6 text-sm">
+      <div
+        class="flex items-center gap-3 mt-4 md:mt-0 md:ml-6 text-sm relative"
+      >
         {% if current_user.is_authenticated %}
         <a href="{{ url_for('user.user_profile', email=current_user.email) }}"
           ><span class="text-gray-700">👤 {{ current_user.username }}</span></a
         >
+
         {% if current_user.role == 'admin' %}
-        <a href="/add" class="text-blue-600 hover:underline">Add News</a>
-        <a
-          href="{{url_for('admin.dashboard')}}"
-          class="text-blue-600 hover:underline"
-          >Dashboard</a
-        >
-        <a
-          href="{{ url_for('admin.manage_users') }}"
-          class="text-blue-600 hover:underline"
-          >Manage Users</a
-        >
-        <a
-          href="{{ url_for('admin.manage_comments') }}"
-          class="text-blue-600 hover:underline"
-        >
-          Manage Comments</a
-        >
-        <a
-          href="{{ url_for('admin.manage_categories') }}"
-          class="text-blue-600 hover:underline"
-        >
-          Manage Categories</a
-        >
-        <a
-          href="{{ url_for('admin.view_subscribers') }}"
-          class="text-blue-600 hover:underline"
-          >Subscribers</a
-        >
+        <!-- Admin Dropdown -->
+        <div class="relative">
+          <button
+            id="adminDropdownToggle"
+            class="text-blue-600 hover:underline focus:outline-none"
+            onclick="toggleAdminDropdown()"
+          >
+            Admin Panel ⏷
+          </button>
+          <div
+            id="adminDropdown"
+            class="absolute right-0 mt-2 bg-white shadow-lg rounded-lg py-2 w-52 border border-gray-200 hidden"
+          >
+            <a
+              href="/add"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >➕ Add News</a
+            >
+            <a
+              href="{{ url_for('admin.dashboard') }}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >📊 Dashboard</a
+            >
+            <a
+              href="{{ url_for('admin.manage_users') }}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >👥 Manage Users</a
+            >
+            <a
+              href="{{ url_for('admin.manage_comments') }}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >💬 Manage Comments</a
+            >
+            <a
+              href="{{ url_for('admin.manage_categories') }}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >🗂️ Manage Categories</a
+            >
+            <a
+              href="{{ url_for('admin.view_subscribers') }}"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >📧 Subscribers</a
+            >
+          </div>
+        </div>
         {% endif %}
+
         <a href="/logout" class="text-red-600 hover:underline">Logout</a>
         {% else %}
         <a href="/login" class="text-blue-600 hover:underline">Login</a>
@@ -101,6 +126,7 @@
       </div>
     </nav>
 
+    <!-- Main Content -->
     <main class="flex-grow container mx-auto p-6">
       {% with messages = get_flashed_messages() %} {% if messages %}
       <div class="mb-4 bg-green-100 text-green-800 p-4 rounded">
@@ -111,12 +137,13 @@
       {% endif %} {% endwith %} {% block content %}{% endblock %}
     </main>
 
-    <div class="container mx-auto mb-2">
+    <!-- Newsletter Subscription -->
+    <div class="container mx-auto mb-4 px-4">
       <form action="{{ url_for('user.subscribe') }}" method="POST" class="mt-4">
         <label class="block text-sm text-gray-600 mb-1"
           >📬 Subscribe to our newsletter</label
         >
-        <div class="flex">
+        <div class="flex max-w-md">
           <input
             type="email"
             name="email"
@@ -131,8 +158,28 @@
       </form>
     </div>
 
-    <footer class="bg-gray-200 text-center py-4">
+    <!-- Footer -->
+    <footer class="bg-gray-200 text-center py-4 text-sm text-gray-600">
       &copy; {{ now().year }} Flask News App
     </footer>
+
+    <!-- JavaScript for dropdown -->
+    <script>
+      function toggleAdminDropdown() {
+        const dropdown = document.getElementById("adminDropdown");
+        dropdown.classList.toggle("hidden");
+      }
+
+      document.addEventListener("click", function (event) {
+        const toggle = document.getElementById("adminDropdownToggle");
+        const dropdown = document.getElementById("adminDropdown");
+        if (
+          !toggle.contains(event.target) &&
+          !dropdown.contains(event.target)
+        ) {
+          dropdown.classList.add("hidden");
+        }
+      });
+    </script>
   </body>
 </html>

@@ -1,30 +1,52 @@
 {% extends "layout.html" %} {% block title %}Register{% endblock %} {% block
 content %}
-<h2 class="text-2xl font-bold mb-4">📝 Register</h2>
-<form method="POST" class="bg-white p-6 rounded shadow max-w-md">
-  <input
-    name="username"
-    type="text"
-    placeholder="Username"
-    required
-    class="w-full mb-4 p-2 border rounded"
-  />
-  <input
-    name="email"
-    type="email"
-    placeholder="email"
-    required
-    class="w-full mb-4 p-2 border rounded"
-  />
-  <input
-    name="password"
-    type="password"
-    placeholder="Password"
-    required
-    class="w-full mb-4 p-2 border rounded"
-  />
-  <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded">
-    Register
-  </button>
-</form>
+<div class="flex justify-center items-center min-h-[60vh]">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-600">
+      📝 Register
+    </h2>
+
+    <form method="POST" class="space-y-4">
+      <input
+        name="username"
+        type="text"
+        placeholder="Username"
+        required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+      />
+
+      <input
+        name="email"
+        type="email"
+        placeholder="Email"
+        required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+      />
+
+      <input
+        name="password"
+        type="password"
+        placeholder="Password"
+        required
+        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring focus:border-blue-500"
+      />
+
+      <button
+        type="submit"
+        class="w-full bg-blue-600 text-white font-semibold py-2.5 rounded-lg hover:bg-blue-700 transition"
+      >
+        Register
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-600 mt-4">
+      Already have an account?
+      <a
+        href="{{ url_for('main.login') }}"
+        class="text-blue-600 hover:underline"
+        >Login</a
+      >
+    </p>
+  </div>
+</div>
 {% endblock %}
